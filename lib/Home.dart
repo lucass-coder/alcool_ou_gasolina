@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -6,8 +7,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  TextEditingController _alcoolController = TextEditingController();
-  TextEditingController _gasolinaController = TextEditingController();
+
+  // TextEditingController _alcoolController = TextEditingController(); // ANTES
+  // TextEditingController _gasolinaController = TextEditingController();  //ANTES
+
+  // USANDO A BIBLIOTECA flutter_masked_text
+  TextEditingController _alcoolController = MoneyMaskedTextController( //DEPOIS
+      decimalSeparator: '.', thousandSeparator: ',', precision: 2);
+  TextEditingController _gasolinaController = MoneyMaskedTextController( //DEPOIS
+      decimalSeparator: '.', thousandSeparator: ',', precision: 2);
+
   String _textoResultado = "";
 
   void _calcular() {
@@ -41,10 +50,19 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+
+    Color getColor() {
+      if( _textoResultado == "Melhor abastecer com Gasolina") {
+        return Colors.red;
+      }else{
+        return Colors.green;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Álcool ou Gasolina"),
-        //backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -54,7 +72,8 @@ class _HomeState extends State<Home> {
             children: [
               Padding(
                 padding: EdgeInsets.only(bottom: 32),
-                child: Image.asset("images/logo.png"),
+                //child: Image.asset("images/logo.png"),
+                child: Image.asset("images/logo2.jpg"),
               ),
               Padding(
                 padding: EdgeInsets.only(bottom: 32),
@@ -73,8 +92,10 @@ class _HomeState extends State<Home> {
                 decoration: InputDecoration(
                   labelText: "Preço Álcool",
                 ),
+                //maxLength: 5,
                 style: TextStyle(
                   fontSize: 22,
+                  color: Colors.green,
                 ),
                 controller: _alcoolController,
               ),
@@ -83,8 +104,10 @@ class _HomeState extends State<Home> {
                 decoration: InputDecoration(
                   labelText: "Preço Gasolina",
                 ),
+                //maxLength: 4,
                 style: TextStyle(
                   fontSize: 22,
+                  color: Colors.red,
                 ),
                 controller: _gasolinaController,
               ),
@@ -98,7 +121,7 @@ class _HomeState extends State<Home> {
                       color: Colors.white,
                     ),
                   ),
-                  color: Colors.blueAccent,
+                  color: Colors.red,
                   onPressed: _calcular,
                 ),
               ),
@@ -106,9 +129,11 @@ class _HomeState extends State<Home> {
                 padding: EdgeInsets.only(top: 20),
                 child: Text(
                   _textoResultado,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
+                    color: getColor(),
                   ),
                 ),
               ),
